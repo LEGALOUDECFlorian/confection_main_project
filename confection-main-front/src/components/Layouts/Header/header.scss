@@ -17,3 +17,15 @@
 .custom-dropdown .dropdown.icon::before {
   display: none;
 }
+
+.cart > i {
+  position: relative;
+
+  .cart-items-quantity {
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    font-weight: 600;
+    color: white;
+  }
+}
