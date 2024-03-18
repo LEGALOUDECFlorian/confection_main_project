@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import {
   Form, Input, Button, Icon,
 } from "semantic-ui-react";
+import { toast } from "react-toastify";
 import axios from "axios";
 
 function PersonalInformation() {
@@ -37,7 +38,6 @@ function PersonalInformation() {
         const response = await axios.get(
           `${import.meta.env.VITE_API_URL}/users/${userId}`,
         );
-        console.log("Données de l'API USER :", response.data);
         setUserData(response.data);
       } catch (error) {
         console.error("Erreur lors de la récupération des données:", error);
@@ -60,11 +60,10 @@ function PersonalInformation() {
         phone_number: userData.phone_number,
       };
 
-      await axios.patch(
+      const response = await axios.patch(
         `${import.meta.env.VITE_API_URL}/users/${userId}`,
         updateUserData,
       );
-
       setUserData((prevData) => ({
         ...prevData,
         currentPassword: "",
@@ -72,8 +71,16 @@ function PersonalInformation() {
         confirmPassword: "",
       }));
       setEditMode(false);
+      if (response.status === 200) {
+        toast.success("Vos modifications on bien était prises en compte");
+      }
     } catch (error) {
-      console.error("Erreur lors de la soumission des données:", error);
+      console.error(error);
+      if (error.response.status === 400) {
+        toast.info("Les champs obligatoires du formulaire doivent être remplis. Celui-ci n'a pas pu être mis à jour.");
+      } else {
+        toast.error("Une erreur est survenue pendant la requête.");
+      }
     }
   };
 

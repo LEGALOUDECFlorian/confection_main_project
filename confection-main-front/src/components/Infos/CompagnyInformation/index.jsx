@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import {
   Form, Input, Button, Icon, Dropdown,
 } from "semantic-ui-react";
+import { toast } from "react-toastify";
 import axios from "axios";
 
 function CompagnyInformation() {
@@ -94,12 +95,13 @@ function CompagnyInformation() {
         zipcode: companyData.workshop_zipcode,
       };
 
-      // Envoye les nouvelles valeurs au backend
+      // Envoi les nouvelles valeurs au backend
+      console.log("updateData:", updateData);
       await axios.patch(
         `${import.meta.env.VITE_API_URL}/createurs/${workshopId}`,
         updateData,
       );
-      console.log("updateData:", updateData);
+
       // Désactive le mode édition après la soumission
       setEditMode(false);
     } catch (error) {

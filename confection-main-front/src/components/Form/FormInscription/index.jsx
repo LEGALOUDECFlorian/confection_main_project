@@ -72,14 +72,12 @@ function FormInscription() {
       const newFormData = {
         lastname, firstname, email, password,
       };
-      console.log(newFormData);
       // Effectuer une requête POST à l'API pour créer un nouvel utilisateur
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/users`,
         newFormData,
       );
       // Log des données du formulaire
-      console.log("Réponse de la création de l'utilisateur:", response.data);
       const userId = response.data.id; // Récupérer l'ID de l'utilisateur créé
 
       // Réinitialiser le formulaire après soumission
@@ -98,16 +96,12 @@ function FormInscription() {
 
       // Logique conditionnelle basée sur le rôle sélectionné
       if (formData.role === "client") {
-        // TODO: Afficher une modal pour indiquer l'inscription réussie
         toast.success("Inscription réussie. Vous pouvez maintenant vous connecter.");
       } else if (formData.role === "creator") {
-        // TODO => Stocker l'utilisateur pour récupérer son ID
-        // TODO    et le rendre accessible du workshopLogin
         navigate("/login/createur", { state: { userId } });
       }
     } catch (error) {
       toast.error("Erreur lors de la création de l'utilisateur:", error);
-      // TODO: Gérer l'erreur de création de l'utilisateur
     }
   };
 

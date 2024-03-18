@@ -45,7 +45,6 @@ function FormLogin() {
       }
 
       const decodedToken = jwtDecode(response.payload.accessToken);
-
       // Redirection en fonction du rôle de l'utilisateur
       if (decodedToken.role === "membre") {
         navigate("/");
@@ -53,7 +52,7 @@ function FormLogin() {
       } else if (decodedToken.role === "createur") {
         navigate("/");
       } else {
-        navigate("/login");
+        navigate("/");
       }
 
       setFormData(initialFormData);
