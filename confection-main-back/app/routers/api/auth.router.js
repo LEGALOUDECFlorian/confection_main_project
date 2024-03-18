@@ -95,10 +95,9 @@ apiAuthRouter.route("/refresh_token")
    *  "error": "Internal Server Error"
    * }
    */
-  .get(controllerWrapper(AuthController.refeshToken.bind(AuthController)));
+  .get(controllerWrapper(AuthController.refeshToken.bind(AuthController)))
 
 // Route pour supprimer le refreshToken
-apiAuthRouter.delete("/refresh_token")
   /**
    * DELETE /api/login/refresh_token
    * @summary Supprimer un refresh token
