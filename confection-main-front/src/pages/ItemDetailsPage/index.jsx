@@ -5,15 +5,18 @@ import {
   Container, Grid, Segment, Image, Header, Button, List,
 } from "semantic-ui-react";
 import IncrementDecrementBtn from "../../components/IncrementDecrementBtn/index.jsx";
-import currencyFormat from "../../utils/helpers.js";
+import currencyFormat from "../../utils/currencyFormat.js";
+import { useCart } from "../../context/CartContext.jsx";
+import { saveCartToLocalStorage } from "../../utils/localStorage.js";
 import "./itemdetails.scss";
 
 function ItemDetailsPage() {
   const [item, setItem] = useState(null);
   const [creator, setCreator] = useState(null);
   const [error, setError] = useState(null);
-  const [count, setCount] = useState(0);
+  const [quantity, setQuantity] = useState(1);
   const { itemId } = useParams();
+  const { addItemToCart } = useCart();
 
   useEffect(() => {
     const fetchItemAndCreator = async () => {
@@ -26,13 +29,21 @@ function ItemDetailsPage() {
         const responseCreator = await axios.get(`${import.meta.env.VITE_API_URL}/createurs/${workshopId}`);
         setCreator(responseCreator.data);
       } catch (err) {
-        console.error("Error fetching data:", err);
         setError("Error fetching data");
       }
     };
 
     fetchItemAndCreator();
   }, [itemId]);
+
+  const handleAddToCart = () => {
+    addItemToCart({ ...item, quantity });
+  };
+
+  useEffect(() => {
+    // Sauvegarde le panier dans localStorage chaque fois qu'il est mis à jour
+    saveCartToLocalStorage();
+  }, []);
 
   if (error) {
     return (
@@ -87,12 +98,12 @@ function ItemDetailsPage() {
                 <Header as="h2" color="grey" className="item-description">{item.name}</Header>
                 <p>{item.description}</p>
                 <div>
-                  <IncrementDecrementBtn setCount={setCount} count={count} />
+                  <IncrementDecrementBtn setQuantity={setQuantity} quantity={quantity} />
                 </div>
                 <Button
                   primary
                   className="cart-btn"
-                  onClick={() => { window.location.href = "/panier"; }}
+                  onClick={handleAddToCart}
                 >
                   Ajouter au panier
                 </Button>

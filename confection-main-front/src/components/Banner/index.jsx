@@ -1,10 +1,4 @@
 function Banner() {
-  // const clipPathStyle = {
-  //   clipPath: "polygon(0 0%, 100% 0, 100% 100%, 0 100%)",
-  //   width: "100%",
-  //   height: "10em",
-  // };
-
   return (
     <div>
       <img

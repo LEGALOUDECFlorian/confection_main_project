@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import currencyFormat from "../../utils/helpers.js";
+import currencyFormat from "../../utils/currencyFormat.js";
 import "./creatoritems.scss";
 
 function CreatorItems() {

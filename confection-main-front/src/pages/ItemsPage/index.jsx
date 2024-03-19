@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { Button } from "semantic-ui-react";
-import currencyFormat from "../../utils/helpers.js";
+import currencyFormat from "../../utils/currencyFormat.js";
 import LoadMoreButton from "../../components/LoadMoreBtn/index.jsx";
 
 function ItemsPage() {

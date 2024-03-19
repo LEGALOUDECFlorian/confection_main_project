@@ -10,9 +10,12 @@ import Logo from "../../../images/logo.svg";
 import "./header.scss";
 import { logout } from "../../../store/reducers/user.js";
 import SearchComponent from "./SearchComponent.jsx";
+import { useCart } from "../../../context/CartContext.jsx";
 
 function Header() {
   const role = localStorage.getItem("role");
+  // On récupère le panier, qu'il soit vide ou non
+  const { cart } = useCart();
   const dispatch = useDispatch();
   const { isLoggedIn } = useSelector((state) => state.user);
   const navigate = useNavigate();
@@ -67,6 +70,9 @@ function Header() {
     }
   };
 
+  // Calcule la quantité totale d'articles dans le panier
+  const totalQuantity = cart.reduce((total, item) => total + item.quantity, 0);
+
   return (
     // TODO: revoir le style du header dont div logo
     <header>
@@ -113,7 +119,9 @@ function Header() {
             </Link>
           )}
           <Link to="/panier" className="item cart">
-            <i className="shopping cart icon" />
+            <i className="shopping cart icon">
+              {totalQuantity > 0 && <span className="cart-items-quantity">{totalQuantity}</span>}
+            </i>
           </Link>
         </div>
       </div>

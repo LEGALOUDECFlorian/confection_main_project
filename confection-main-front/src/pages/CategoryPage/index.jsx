@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { Button } from "semantic-ui-react";
 import axios from "axios";
 import Banner from "../../components/Banner/index.jsx";
-import currencyFormat from "../../utils/helpers.js";
+import currencyFormat from "../../utils/currencyFormat.js";
 
 function CategoryPage() {
   const [items, setItems] = useState([]);
