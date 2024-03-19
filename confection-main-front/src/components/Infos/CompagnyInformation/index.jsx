@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import {
   Form, Input, Button, Icon, Dropdown,
 } from "semantic-ui-react";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import axios from "axios";
 
 function CompagnyInformation() {

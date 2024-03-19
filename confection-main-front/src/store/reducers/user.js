@@ -156,13 +156,15 @@ const userReducer = createReducer(initialState, (builder) => {
       console.log("Utilisateur déconnecté avec succès.");
     })
     .addCase(checkAuth.fulfilled, (state, action) => {
-      state.isLoggedIn = true;
-      state.id = action.payload.id;
-      state.accessToken = action.payload.accessToken;
-      state.refreshToken = action.payload.refreshToken;
-      console.log(action.payload.decodedToken);
-      state.decodedToken = JSON.parse(action.payload.decodedToken);
-      state.error = null;
+      if (!state.isLoggedIn) {
+        state.isLoggedIn = true;
+        state.id = action.payload.id;
+        state.accessToken = action.payload.accessToken;
+        state.refreshToken = action.payload.refreshToken;
+        console.log(action.payload.decodedToken);
+        state.decodedToken = JSON.parse(action.payload.decodedToken);
+        state.error = null;
+      }
     })
     // Gère le cas où la suppression du token de rafraîchissement est réussie
     .addCase(deleteRefreshToken.fulfilled, () => {

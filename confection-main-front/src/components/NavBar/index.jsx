@@ -39,7 +39,6 @@ function Navbar() {
       const subcategoriesResponse = await axios.get(
         `${import.meta.env.VITE_API_URL}/categories/sous-categories`,
       );
-
       const categorySubcategories = subcategoriesResponse.data
         .filter(
           (subcategory) => subcategory.category_name.toLowerCase()
