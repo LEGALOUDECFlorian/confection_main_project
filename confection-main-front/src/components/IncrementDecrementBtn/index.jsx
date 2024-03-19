@@ -4,14 +4,12 @@ import PropTypes from "prop-types";
 
 function IncrementDecrementBtn({ setQuantity, quantity }) {
   const handleDecrementCounter = () => {
-    console.log(setQuantity, quantity);
     if (quantity > 1) {
       setQuantity((previousQuantity) => previousQuantity - 1);
     }
   };
 
   const handleIncrementCounter = () => {
-    console.log(setQuantity, quantity);
     setQuantity((previousQuantity) => previousQuantity + 1);
   };
 

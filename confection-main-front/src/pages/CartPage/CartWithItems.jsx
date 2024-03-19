@@ -48,7 +48,7 @@ function CartWithItems() {
                             <Image src={item.picture} alt={item.name} />
                           </GridColumn>
                           {/* {détails du produits} */}
-                          <GridColumn>
+                          <GridColumn width={12}>
                             <Link to={`/articles/${item.id}`}>{item.name}</Link>
                             <div>
                               Prix:
@@ -60,9 +60,9 @@ function CartWithItems() {
                               {item.quantity}
                             </div>
                             <div className="quantity-controls">
-                              <Button icon="minus" className="quantity-btn" onClick={() => decrementItemQuantity(item.id)} />
+                              <Button icon="minus" className="quantity-btn" size="mini" onClick={() => decrementItemQuantity(item.id)} />
                               <span className="quantity__span">{item.quantity}</span>
-                              <Button icon="plus" className="quantity-btn" onClick={() => incrementItemQuantity(item.id)} />
+                              <Button icon="plus" className="quantity-btn" size="mini" onClick={() => incrementItemQuantity(item.id)} />
                               <button
                                 type="button"
                                 aria-label="supprimer l'article du panier"
@@ -98,7 +98,7 @@ function CartWithItems() {
                   </div>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", fontWeight: "700" }}>
-                  <div style={{ textAlign: "left" }}>Total :</div>
+                  <div style={{ textAlign: "left" }}>TOTAL :</div>
                   <div style={{ textAlign: "right" }}>
                     {currencyFormat(calculateTotal())}
                   </div>
