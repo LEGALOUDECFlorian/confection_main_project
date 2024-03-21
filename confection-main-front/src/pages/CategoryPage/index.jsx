@@ -52,7 +52,7 @@ function CategoryPage() {
                 <div className="subcateogry-container" style={{ display: "flex", justifyContent: "center" }}>
                   <img
                   // src={subcategory.subcategory_image}
-                    src="https://cdn.discordapp.com/attachments/1206982808489304135/1206982970515132476/Default_category_man_clothes_22.png?ex=65e737fc&is=65d4c2fc&hm=a7ce3c6a530dd5375eabf4d2af312d9164247c329aa7d2ca50a40d6e54e6f6e1&"
+                    src={`../images/${categoryName}.png`}
                     alt={subcategory.subcategory_name}
                     className="subcategory-image"
                     style={{ width: "60%", height: "auto", borderRadius: "1.2rem" }}
