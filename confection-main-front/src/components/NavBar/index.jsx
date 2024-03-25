@@ -15,16 +15,28 @@ function Navbar() {
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [subcategoriesData, setSubcategoriesData] = useState([]);
 
-  useEffect(() => {
-    const fetchSubcategoriesData = async () => {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/sous-categories`);
-        setSubcategoriesData(response.data);
-      } catch (error) {
-        console.error("Error fetching subcategories data:", error);
-      }
-    };
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/categories`,
+      );
+      setCategories(response.data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
 
+  const fetchSubcategoriesData = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/sous-categories`);
+      setSubcategoriesData(response.data);
+    } catch (error) {
+      console.error("Error fetching subcategories data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
     fetchSubcategoriesData();
   }, []);
 
@@ -54,21 +66,6 @@ function Navbar() {
       console.error(`Error fetching subcategories for ${categoryName}:`, error);
     }
   };
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/categories`,
-        );
-        setCategories(response.data);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-
-    fetchCategories();
-  }, []);
 
   // Render mobile navigation
   const renderMobileNavigation = () => (

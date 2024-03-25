@@ -59,7 +59,7 @@ function FormInscription() {
       return;
     }
 
-    // Afficher la modal de confirmation après soumission
+    // Affiche la modal de confirmation après soumission
     setShowModal(true);
   };
 

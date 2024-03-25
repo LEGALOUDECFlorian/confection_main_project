@@ -1,42 +1,64 @@
 /* eslint-disable linebreak-style */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable linebreak-style */
 import { useState, useEffect } from "react";
 import {
   Form, Input, TextArea, Button, Checkbox, Dropdown, Image, Segment,
 } from "semantic-ui-react";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Formaddarticle() {
+  const navigate = useNavigate();
   const workshopId = parseInt(localStorage.getItem("workshopId"), 10);
+  const userId = parseInt(localStorage.getItem("userId"), 10);
   const [articleData, setArticleData] = useState({
-    name: "test",
-    description: "test",
+    name: "",
+    description: "",
     picture: "",
-    price: 29,
-    material: "coton",
+    price: "",
+    material: "",
     customizable: false,
     workshop_id: workshopId,
-    category_id: 1,
-    subcategory_id: 2,
-    status_id: 1,
+    category_id: "",
+    subcategory_id: "",
+    status_id: 2,
   });
 
-  const [categoriesWithSubcategories, setCategoriesWithSubcategories] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  // Message de la modale
+  const confirmationMessage = "Voulez-vous ajouter un autre article ?";
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/categories`,
+      );
+      setCategories(response.data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchDataCategoriesWithSubcategories = async () => {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/categories/sous-categories`);
-        setCategoriesWithSubcategories(response.data);
-      } catch (error) {
-        console.error("Error fetching categories with subcategories:", error);
-      }
-    };
-
-    fetchDataCategoriesWithSubcategories();
+    fetchCategories();
   }, []);
+
+  const handleSubCategory = async (categoryName) => {
+    try {
+      console.log("categoryName", categoryName);
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/categories/${categoryName}/sous-categories`,
+      );
+      console.log("handleSubCategory", response);
+      setSubcategories(response.data);
+    } catch (error) {
+      console.error(`Error fetching subcategories for ${categoryName}:`, error);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -52,45 +74,72 @@ function Formaddarticle() {
   };
 
   const handleCategoryChange = (e, { value }) => {
-    setArticleData({ ...articleData, category_id: value, subcategory_id: 1 });
+    setArticleData({ ...articleData, category_id: value, subcategory_id: null });
+    const selectedCategory = categories.find((category) => category.id === value);
+    handleSubCategory(selectedCategory.name.toLowerCase());
   };
 
   const handleSubcategoryChange = (e, { value }) => {
     setArticleData({ ...articleData, subcategory_id: value });
   };
 
+  const handleModalConfirm = () => {
+    setArticleData({
+      name: "",
+      description: "",
+      picture: "",
+      price: "",
+      material: "",
+      customizable: false,
+      workshop_id: workshopId,
+      category_id: "",
+      subcategory_id: "",
+      status_id: 2,
+    });
+    setShowModal(false);
+    setLoading(false);
+  };
+
+  const handleCancelConfirm = () => {
+    setArticleData({
+      name: "",
+      description: "",
+      picture: "",
+      price: "",
+      material: "",
+      customizable: false,
+      workshop_id: workshopId,
+      category_id: "",
+      subcategory_id: "",
+      status_id: 2,
+    });
+    navigate(`/monespace/createur/${userId}`);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
+      setLoading(true);
+
       const cloudinaryData = new FormData();
       cloudinaryData.append("picture", articleData.picture);
       const cloudinaryRes = await axios.post("http://localhost:3000/upload", cloudinaryData);
       const imageUrl = cloudinaryRes.data.secure_url;
       const newArticleData = { ...articleData, picture: imageUrl };
 
-      await axios.post(`${import.meta.env.VITE_API_URL}/articles`, newArticleData);
-      toast.success("Article ajouté avec succès !");
-      setArticleData({
-        name: "test",
-        description: "test",
-        picture: "",
-        price: 0,
-        material: "test",
-        customizable: false,
-        workshop_id: workshopId,
-        category_id: 2,
-        subcategory_id: 2,
-        status_id: 2,
-      });
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/articles`, newArticleData);
+      if (response.status === 200) {
+        toast.success("Article ajouté avec succès !");
+        setShowModal(true);
+      } else {
+        setLoading(false);
+      }
     } catch (error) {
       console.error("Erreur lors de l'ajout de l'article :", error);
       toast.error("Erreur lors de l'ajout de l'article");
     }
   };
-
-  const uniqueCategories = [...new Set(categoriesWithSubcategories
-    .map((category) => category.category_id))];
 
   return (
     <div className="ui grid centered">
@@ -149,6 +198,8 @@ function Formaddarticle() {
                   id="price"
                   type="number"
                   name="price"
+                  min="0"
+                  max="9999"
                   value={articleData.price}
                   onChange={handleInputChange}
                   placeholder="Entrez le prix de l'article"
@@ -185,15 +236,11 @@ function Formaddarticle() {
                   placeholder="Sélectionner une catégorie"
                   fluid
                   selection
-                  options={uniqueCategories.map((categoryId) => {
-                    const category = categoriesWithSubcategories
-                      .find((cat) => cat.category_id === categoryId);
-                    return {
-                      key: categoryId,
-                      text: category.category_name,
-                      value: categoryId,
-                    };
-                  })}
+                  options={categories.map((category) => ({
+                    key: category.id,
+                    text: category.name,
+                    value: category.id,
+                  }))}
                   onChange={handleCategoryChange}
                   value={articleData.category_id}
                 />
@@ -206,23 +253,56 @@ function Formaddarticle() {
                 placeholder="Sélectionner une sous-catégorie"
                 fluid
                 selection
-                // options={categoriesWithSubcategories
-                //   ? categoriesWithSubcategories
-                //       .filter((category) => category.category_id === articleData.category_id)
-                //       .flatMap((category) => category.subcategories.map((subcategory) => ({
-                //         key: subcategory.subcategory_id,
-                //         text: subcategory.subcategory_name,
-                //         value: subcategory.subcategory_id,
-                //       })))
-                //   : []
-                // }
+                options={subcategories.map((subcategory) => ({
+                  key: subcategory.subcategory_id,
+                  text: subcategory.subcategory_name,
+                  value: subcategory.subcategory_id,
+                }))}
                 onChange={handleSubcategoryChange}
                 value={articleData.subcategory_id}
+                disabled={!articleData.category_id}
               />
             </Form.Field>
-            <Button type="submit" style={{ color: "white" }}>Ajouter l'article</Button>
+            <Button
+              type="submit"
+              style={{ color: "white" }}
+            >
+              Ajouter l'article
+            </Button>
           </Form>
+
+          {/* Loader */}
+          {/* {loading && (
+          <div className="ui active centered inline loader" />
+          )} */}
+
+          {/* Modal de confirmation */}
+          {showModal && (
+            <div className="modal">
+              <div className="modal-content">
+                <p>{confirmationMessage}</p>
+                <div className="modal-buttons">
+                  <button
+                    type="button"
+                    onClick={handleModalConfirm}
+                  >
+                    Confirmer
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCancelConfirm}
+                  >
+                    Non merci
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </Segment>
+        {/* Loader */}
+        {loading && (
+          <div className="ui active centered inline loader" />
+        )}
       </div>
     </div>
   );

@@ -191,6 +191,14 @@ form {
   opacity: 0.8;
 }
 
+/* Positionnement du loader page ajout article */
+.ui.active.centered.inline.loader {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 /* Animation pour un effet d'apparition fluide */
 @keyframes fadeIn {
   from {
